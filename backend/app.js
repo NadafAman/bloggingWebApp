@@ -7,9 +7,10 @@ import { errorMiddleware } from "./middlewares/error.js";
 import userRouter from "./routes/userRouter.js";
 import blogRouter from "./routes/blogRouter.js";
 import fileUpload from "express-fileupload";
-
+import path from "path";
 const app = express();
-dotenv.config({ path: "./config/config.env" });
+dotenv.config({ path: "./config.env" });
+const _dirname = path.resolve();
 
 app.use(
   cors({
@@ -32,6 +33,11 @@ app.use(
 
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/blog", blogRouter);
+
+app.use(express.static(path.join(_dirname,"/frontend/dist")))
+app.get('*',(_,res)=>{
+  res.sendFile(path.resolve(_dirname,"/frontend","dist","index.html"))
+});
 
 dbConnection();
 
